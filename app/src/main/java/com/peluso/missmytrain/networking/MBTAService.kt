@@ -5,18 +5,15 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryName
 
 public interface MBTAService {
-
-    //api key
     /*
-    * https://api.nytimes.com/svc/topstories/v2/technology.json?
-    * api-key=0xYqGDRykcAmLaa9lsalwtiseQs05TID
+    *
+    * predictions?filter[stop]=place-coecl
     * */
 
-    @GET("{section}.json")
-    fun getStoryTimes(@Path("section") section: String,
-                      @Query("apiKey") apiKey: String
-    ) : Call<MBTAResponse>
+    @GET("predictions")
+    fun getPredictions(@Query("filter[stop]") stopName: String): Call<MBTAResponse>
     
 }
