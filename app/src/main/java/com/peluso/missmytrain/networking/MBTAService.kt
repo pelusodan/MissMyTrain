@@ -8,10 +8,6 @@ import retrofit2.http.Query
 import retrofit2.http.QueryName
 
 public interface MBTAService {
-    /*
-    *
-    * predictions?filter[stop]=place-coecl
-    * */
 
     @GET("predictions")
     fun getPredictions(@Query("filter[stop]") stopName: String): Call<MBTAResponse>

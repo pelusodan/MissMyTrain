@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Thread.sleep
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,12 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        recyclerView = findViewById(R.id.recyclerView)
         recyclerAdapter = RecyclerViewAdapter(this)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = recyclerAdapter
-
 
         val apiClient = APIClient.retrofitInstance!!.create(MBTAService::class.java)
         val call = apiClient.getPredictions("place-coecl")
@@ -51,8 +47,13 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 recyclerAdapter.setItems(response.body()!!.data)
+                recyclerView = findViewById(R.id.recyclerView)
+                recyclerView.layoutManager = LinearLayoutManager(parent)
+                recyclerView.adapter = recyclerAdapter
             }
         })
+
+
     }
 
 }
