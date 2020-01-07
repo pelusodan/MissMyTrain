@@ -10,14 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.peluso.missmytrain.MainActivity.Companion.TAG
 import com.peluso.missmytrain.R
-import com.peluso.missmytrain.models.RecyclerViewCell
-import com.peluso.missmytrain.models.Train
+import com.peluso.missmytrain.models.*
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.recyclerview_cell.view.*
 
 class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
 
     var entry_list: List<RecyclerViewCell> = listOf()
 
+    val clickSubject = PublishSubject.create<MBTAResponse>()
 
 
     class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!){
@@ -46,7 +47,7 @@ class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerV
         Log.v(TAG,"VIEW BINDED")
     }
 
-    fun setItems(trains: List<Train>) {
+    fun setTrains(trains: List<Train>) {
         val cells: ArrayList<RecyclerViewCell> = ArrayList()
         for(train in trains) {
             cells.add(RecyclerViewCell("99min",
@@ -56,6 +57,15 @@ class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerV
         }
         entry_list = cells
 
+    }
+
+    // function for setting walk times
+    fun setWalkTimes(response: MapQuestResponse) {
+        var cells = this.entry_list.toMutableList()
+        for(i in 0 until cells.size-1){
+            cells[i].walkTime = response.formattedTime
+        }
+        notifyDataSetChanged()
     }
 
 

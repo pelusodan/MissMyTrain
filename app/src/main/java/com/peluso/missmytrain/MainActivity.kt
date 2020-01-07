@@ -2,19 +2,21 @@ package com.peluso.missmytrain
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.peluso.missmytrain.adapter.RecyclerViewAdapter
+import com.peluso.missmytrain.models.Location
 import com.peluso.missmytrain.models.MBTAResponse
-import com.peluso.missmytrain.networking.APIClient
+import com.peluso.missmytrain.models.MapQuestResponse
+import com.peluso.missmytrain.networking.MBTAClient
 import com.peluso.missmytrain.networking.MBTAService
-import kotlinx.android.synthetic.main.activity_main.*
+import com.peluso.missmytrain.networking.MapQuestClient
+import com.peluso.missmytrain.networking.MapQuestService
+import io.reactivex.subjects.PublishSubject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Thread.sleep
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,10 +34,26 @@ class MainActivity : AppCompatActivity() {
 
         recyclerAdapter = RecyclerViewAdapter(this)
 
-        val apiClient = APIClient.retrofitInstance!!.create(MBTAService::class.java)
-        val call = apiClient.getPredictions("place-coecl")
+        // for MBTA API
+        val MBTAClient = MBTAClient.retrofitInstance!!.create(MBTAService::class.java)
+        val MBTACall = MBTAClient.getPredictions("place-coecl")
 
-        call.enqueue(object : Callback<MBTAResponse> {
+        // for MapQuest API
+        val MapQuestClient = MapQuestClient.retrofitInstance!!.create(MapQuestService::class.java)
+        val MapQuestCall = MapQuestClient.getRoute(getString(R.string.MapQuestAPIKey),
+            Location("Boston",getString(R.string.Address),"Massachusetts"),
+            // Currently hardcoded for Copley Station
+            Location("Boston","640 Boylston Street","Massachusetts"),
+            "pedestrian"
+        )
+
+
+        recyclerView.setOnClickListener {
+            recyclerAdapter.clickSubject.onNext(
+                recyclerAdapter.setTrains(t)
+            )
+        }
+        /*MBTACall.enqueue(object : Callback<MBTAResponse> {
             override fun onFailure(call: Call<MBTAResponse>, t: Throwable) {
                 Log.wtf(TAG,t.message)
             }
@@ -46,12 +64,33 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                recyclerAdapter.setItems(response.body()!!.data)
+                recyclerAdapter.setTrains(response.body()!!.data)
                 recyclerView = findViewById(R.id.recyclerView)
                 recyclerView.layoutManager = LinearLayoutManager(parent)
                 recyclerView.adapter = recyclerAdapter
             }
         })
+
+        MapQuestCall.enqueue(object : Callback<MapQuestResponse> {
+            override fun onFailure(call: Call<MapQuestResponse>, t: Throwable) {
+                Log.wtf(TAG,t.message)
+            }
+
+            override fun onResponse(
+                call: Call<MapQuestResponse>,
+                response: Response<MapQuestResponse>
+            ) {
+                if(!response.isSuccessful) {
+                    Log.v(TAG,response.code().toString())
+                    return
+                }
+
+                recyclerAdapter.setWalkTimes(response.body()!!)
+                recyclerView = findViewById(R.id.recyclerView)
+                recyclerView.layoutManager = LinearLayoutManager(parent)
+                recyclerView.adapter = recyclerAdapter
+            }
+        })*/
 
 
     }
