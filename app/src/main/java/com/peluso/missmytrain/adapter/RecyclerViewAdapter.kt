@@ -1,7 +1,6 @@
 package com.peluso.missmytrain.adapter
 
 import android.content.Context
-import android.graphics.Movie
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.peluso.missmytrain.MainActivity.Companion.TAG
+import com.peluso.missmytrain.view.MainActivity.Companion.TAG
 import com.peluso.missmytrain.R
+import com.peluso.missmytrain.Utils
 import com.peluso.missmytrain.models.*
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.recyclerview_cell.view.*
 
 class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
 
@@ -44,8 +43,8 @@ class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerV
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.trainName.text = entry_list[position].trainName
-        holder.trainTime.text = entry_list[position].trainTime
-        holder.walkTime.text = entry_list[position].walkTime
+        holder.trainTime.text = Utils.displayTrainString(entry_list[position].trainTime)
+        holder.walkTime.text = Utils.displayWalkString(entry_list[position].walkTime)
         holder.trainDirection.text = if (entry_list[position].trainDirection==1)  "Inbound" else "Outbound"
         holder.cellLayout.background = ColorDrawable(entry_list[position].displayGradient().toArgb())
         Log.v(TAG,"VIEW BINDED")

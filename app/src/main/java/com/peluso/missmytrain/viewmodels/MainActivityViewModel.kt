@@ -21,6 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class MainActivityViewModel(val rp: ResourceProvider,
@@ -28,10 +29,7 @@ class MainActivityViewModel(val rp: ResourceProvider,
     companion object{
         val TAG = "MainActivityViewModel"
     }
-
     // flags for seeing if MBTA call and MAPQUEST call have both arrived
-    var receivedMBTA = false
-    var receiveMapQuest = false
     var walkTime = "00:05:00"
 
     fun connect(walktimeSetter: (String)->Unit, dataAdapter: (List<RecyclerViewCell>)->Unit){
@@ -44,6 +42,34 @@ class MainActivityViewModel(val rp: ResourceProvider,
             Location("Boston","640 Boylston Street","Massachusetts").toString(),
             "pedestrian"
         )
+        Observable.zip(MBTACall,
+            mapQuestCall,
+            BiFunction<MBTAResponse,MapQuestResponse,List<RecyclerViewCell>> {mbta, mapquest ->
+            return@BiFunction zipper(mapquest.route.formattedTime,mbta)
+        } ) .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                Log.v(TAG,it.toString())
+                dataAdapter(it)
+            }
+       /* MBTACall
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .zipWith(mapQuestCall, BiFunction<MBTAResponse,MapQuestResponse,List<RecyclerViewCell>> {mbta, mapquest ->
+                zipper(mapquest.route.formattedTime,mbta)
+            } )
+            .subscribe {  }
+            }*/
+            /*.subscribe({value->
+
+            },{error->
+                Log.v(TAG,error.message)
+            },{
+                Log.v(TAG,"Completed")
+            })*/
+
+
+        /*
 
         mapQuestCall.enqueue(object : Callback<MapQuestResponse>{
             override fun onFailure(call: Call<MapQuestResponse>, t: Throwable) {
@@ -73,15 +99,20 @@ class MainActivityViewModel(val rp: ResourceProvider,
                 }
                 dataAdapter(zipper(walkTime,response.body()!!))
             }
-        })
-
-
+        })*/
     }
 
     private fun zipper(t: String, u: MBTAResponse): List<RecyclerViewCell>{
         var out = ArrayList<RecyclerViewCell>()
         u.data.forEach {
             out.add(RecyclerViewCell(t,it.attributes.arrival_time,it.relationships.route.data.id,it.attributes.direction_id))
+        }
+        return out
+    }
+    private fun zipperTest(mp: MapQuestResponse, mbtaResponse: MBTAResponse ): List<RecyclerViewCell>{
+        var out = ArrayList<RecyclerViewCell>()
+        mbtaResponse.data.forEach {
+            out.add(RecyclerViewCell(mp.route.formattedTime,it.attributes.arrival_time,it.relationships.route.data.id,it.attributes.direction_id))
         }
         return out
     }

@@ -1,27 +1,16 @@
-package com.peluso.missmytrain
+package com.peluso.missmytrain.view
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.peluso.missmytrain.R
 import com.peluso.missmytrain.adapter.RecyclerViewAdapter
 import com.peluso.missmytrain.models.*
-import com.peluso.missmytrain.networking.MBTAClient
-import com.peluso.missmytrain.networking.MBTAService
-import com.peluso.missmytrain.networking.MapQuestClient
-import com.peluso.missmytrain.networking.MapQuestService
 import com.peluso.missmytrain.viewmodels.MainActivityViewModel
 import com.peluso.missmytrain.viewmodels.MainActivityViewModelFactory
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {

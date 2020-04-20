@@ -12,6 +12,6 @@ interface MapQuestService {
     fun getRoute(@Query("key") key: String,
                  @Query("from") from: String,
                  @Query("to") to: String,
-                 @Query("routeType") routeType: String) : Call<MapQuestResponse> // should be 'pedestrian'
+                 @Query("routeType") routeType: String) : Observable<MapQuestResponse> // should be 'pedestrian'
 
 }

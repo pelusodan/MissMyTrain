@@ -12,6 +12,6 @@ import retrofit2.http.QueryName
 public interface MBTAService {
 
     @GET("predictions")
-    fun getPredictions(@Query("filter[stop]") stopName: String): Call<MBTAResponse>
+    fun getPredictions(@Query("filter[stop]") stopName: String): Observable<MBTAResponse>
     
 }
