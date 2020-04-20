@@ -2,10 +2,12 @@ package com.peluso.missmytrain.adapter
 
 import android.content.Context
 import android.graphics.Movie
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.peluso.missmytrain.MainActivity.Companion.TAG
@@ -26,6 +28,7 @@ class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerV
         val trainTime: TextView = itemView!!.findViewById(R.id.trainTimeTextView)
         val trainName: TextView = itemView!!.findViewById(R.id.trainNameTextView)
         val trainDirection: TextView = itemView!!.findViewById(R.id.directionNameTextView)
+        val cellLayout: LinearLayout = itemView!!.findViewById(R.id.recyclerViewCell)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -44,26 +47,19 @@ class RecyclerViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerV
         holder.trainTime.text = entry_list[position].trainTime
         holder.walkTime.text = entry_list[position].walkTime
         holder.trainDirection.text = if (entry_list[position].trainDirection==1)  "Inbound" else "Outbound"
+        holder.cellLayout.background = ColorDrawable(entry_list[position].displayGradient().toArgb())
         Log.v(TAG,"VIEW BINDED")
     }
 
-    fun setTrains(trains: List<Train>) {
-        val cells: ArrayList<RecyclerViewCell> = ArrayList()
-        for(train in trains) {
-            cells.add(RecyclerViewCell("99min",
-                train.attributes.arrival_time,
-                train.relationships.route.data.id,
-                train.attributes.direction_id))
-        }
+    fun setData(cells: List<RecyclerViewCell>){
         entry_list = cells
-
     }
 
     // function for setting walk times
     fun setWalkTimes(response: MapQuestResponse) {
         var cells = this.entry_list.toMutableList()
         for(i in 0 until cells.size-1){
-            cells[i].walkTime = response.formattedTime
+            cells[i].walkTime = response.route.formattedTime
         }
         notifyDataSetChanged()
     }

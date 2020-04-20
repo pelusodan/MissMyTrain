@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object MapQuestClient {
 
-    private const val BASE_URL = "http://www.mapquestapi.com/directions/v2/"
+    private const val BASE_URL = "https://www.mapquestapi.com/directions/v2/"
     private var retrofit: Retrofit? = null
     val retrofitInstance: Retrofit?
         get() {
@@ -14,7 +14,7 @@ object MapQuestClient {
                 retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                   // .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build()
             }
             return retrofit

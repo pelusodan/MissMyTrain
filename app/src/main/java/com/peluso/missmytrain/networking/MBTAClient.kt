@@ -14,7 +14,7 @@ object MBTAClient {
                 retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+               //     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build()
             }
             return retrofit
